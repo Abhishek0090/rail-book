@@ -1,0 +1,35 @@
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ChatAssistant from "@/components/chat/ChatAssistant";
+import React from "react";
+import NextTopLoader from "nextjs-toploader";
+import { Toaster } from "react-hot-toast";
+
+const BRAND = "#7c3aed";
+
+const Provider = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <NextTopLoader
+        color={BRAND}
+        initialPosition={0.08}
+        crawlSpeed={200}
+        height={3}
+        crawl={true}
+        showSpinner={false}
+        easing="ease"
+        speed={200}
+        shadow={`0 0 10px ${BRAND},0 0 5px ${BRAND}`}
+        zIndex={1600}
+        showAtBottom={false}
+      />
+      <Toaster position="top-center" />
+      <Navbar />
+      <div className="flex-1">{children}</div>
+      <Footer />
+      <ChatAssistant />
+    </div>
+  );
+};
+
+export default Provider;
