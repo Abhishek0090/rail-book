@@ -115,7 +115,7 @@ export default async function TrainRoutePage({
               <p className="mt-1 text-white/80">Seats filling fast!</p>
               <Link
                 href={`/booking/search?from=${first.code}&to=${last.code}`}
-                className="mt-4 inline-block rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-gray-900 hover:bg-amber-300"
+                className="mt-4 inline-block rounded-lg bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-amber-300"
               >
                 Book Now
               </Link>

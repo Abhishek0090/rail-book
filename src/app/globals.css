@@ -111,27 +111,99 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Fixed brand shades for things that look the same in both themes:
+     gradient buttons with white text, dark banners, the hero train. */
+  --rb-blue-600: oklch(0.546 0.245 262.9);
+  --rb-blue-800: oklch(0.424 0.199 265.6);
+  --rb-blue-950: oklch(0.282 0.091 267.9);
+  --rb-grape-600: oklch(0.558 0.288 302.3);
+  --rb-grape-700: oklch(0.496 0.265 301.9);
+
+  /* Hero track scenery */
+  --track-mast: #cbd5e1;
+  --track-arm: #94a3b8;
+  --track-wire: #64748b;
+  --track-ballast: #e2e8f0;
+  --track-stone: #cbd5e1;
+  --track-sleeper: #94a3b8;
+  --track-rail: #64748b;
 }
 
+/* Dark theme (opt-in via the navbar toggle; <html class="dark"> is set in layout.tsx from the
+   "theme" cookie). Pages use plain classes like bg-white, text-gray-900 and
+   bg-brand-50, so instead of dark: variants everywhere, the palettes they use
+   are remapped here: grays invert, tints become dark, text shades lighten. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  color-scheme: dark;
+  --background: oklch(0.18 0.025 270);
+  --foreground: oklch(0.95 0.005 270);
+  --card: oklch(0.23 0.03 270);
+  --card-foreground: oklch(0.95 0.005 270);
+  --popover: oklch(0.23 0.03 270);
+  --popover-foreground: oklch(0.95 0.005 270);
+  --primary: oklch(0.68 0.17 262);
+  --primary-foreground: oklch(0.18 0.025 270);
+  --secondary: oklch(0.26 0.025 270);
+  --secondary-foreground: oklch(0.95 0.005 270);
+  --muted: oklch(0.26 0.025 270);
+  --muted-foreground: oklch(0.7 0.02 270);
+  --accent: oklch(0.26 0.025 270);
+  --accent-foreground: oklch(0.95 0.005 270);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.34 0.03 270);
+  --input: oklch(0.34 0.03 270);
+  --ring: oklch(0.6 0.15 262);
+
+  --color-gray-50: oklch(0.18 0.025 270);
+  --color-gray-100: oklch(0.27 0.03 270);
+  --color-gray-200: oklch(0.34 0.03 270);
+  --color-gray-300: oklch(0.4 0.025 270);
+  --color-gray-400: oklch(0.55 0.02 270);
+  --color-gray-500: oklch(0.66 0.02 270);
+  --color-gray-600: oklch(0.75 0.015 270);
+  --color-gray-700: oklch(0.83 0.012 270);
+  --color-gray-800: oklch(0.9 0.008 270);
+  --color-gray-900: oklch(0.95 0.005 270);
+
+  --color-brand-50: oklch(0.24 0.06 268);
+  --color-brand-100: oklch(0.29 0.09 268);
+  --color-brand-200: oklch(0.36 0.12 268);
+  --color-brand-300: oklch(0.48 0.15 266);
+  --color-brand-600: oklch(0.68 0.17 262);
+  --color-brand-700: oklch(0.76 0.13 262);
+  --color-brand-800: oklch(0.83 0.1 262);
+  --color-brand-900: oklch(0.88 0.07 262);
+
+  --color-grape-50: oklch(0.24 0.06 305);
+  --color-grape-100: oklch(0.29 0.09 305);
+  --color-grape-200: oklch(0.38 0.12 305);
+  --color-grape-300: oklch(0.5 0.15 305);
+  --color-grape-600: oklch(0.72 0.18 305);
+  --color-grape-700: oklch(0.8 0.13 305);
+
+  --color-amber-50: oklch(0.26 0.05 75);
+  --color-amber-100: oklch(0.3 0.06 75);
+  --color-amber-200: oklch(0.38 0.07 75);
+  --color-amber-600: oklch(0.8 0.15 75);
+  --color-amber-700: oklch(0.85 0.12 85);
+  --color-amber-800: oklch(0.88 0.1 85);
+
+  --color-emerald-50: oklch(0.26 0.05 160);
+  --color-emerald-200: oklch(0.38 0.07 160);
+  --color-emerald-700: oklch(0.82 0.13 160);
+
+  --color-rose-50: oklch(0.26 0.06 15);
+  --color-rose-200: oklch(0.38 0.08 15);
+  --color-rose-700: oklch(0.8 0.12 15);
+
+  --track-mast: #475569;
+  --track-arm: #64748b;
+  --track-wire: #94a3b8;
+  --track-ballast: #1e293b;
+  --track-stone: #334155;
+  --track-sleeper: #475569;
+  --track-rail: #94a3b8;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -161,19 +233,20 @@
 }
 
 /* Blue to purple brand blend */
+/* These two carry white text, so they use the fixed --rb-* shades. */
 @utility bg-brand-gradient {
   background-image: linear-gradient(
     135deg,
-    var(--color-brand-600),
-    var(--color-grape-600)
+    var(--rb-blue-600),
+    var(--rb-grape-600)
   );
 }
 @utility bg-brand-gradient-dark {
   background-image: linear-gradient(
     135deg,
-    var(--color-brand-950),
-    var(--color-brand-800) 45%,
-    var(--color-grape-700)
+    var(--rb-blue-950),
+    var(--rb-blue-800) 45%,
+    var(--rb-grape-700)
   );
 }
 @utility bg-brand-gradient-soft {
@@ -227,6 +300,37 @@
   .rb-wheel {
     animation: none;
   }
+}
+
+/* Dark theme: white surfaces become cards. Unlayered, so these win over the
+   bg-white utilities without !important. text-white is left alone. */
+.dark .bg-white {
+  background-color: var(--card);
+}
+.dark .bg-white\/90 {
+  background-color: color-mix(in oklab, var(--card) 90%, transparent);
+}
+.dark .bg-white\/80 {
+  background-color: color-mix(in oklab, var(--card) 80%, transparent);
+}
+.dark .bg-white\/70 {
+  background-color: color-mix(in oklab, var(--card) 70%, transparent);
+}
+.dark .ring-white {
+  --tw-ring-color: var(--card);
+}
+.dark .react-calendar {
+  background: var(--card);
+  color: var(--foreground);
+}
+.dark .react-calendar__tile:enabled:hover,
+.dark .react-calendar__navigation button:enabled:hover {
+  background: var(--color-gray-100);
+}
+.dark .react-calendar__tile:disabled,
+.dark .react-calendar__navigation button:disabled {
+  background: transparent;
+  color: var(--color-gray-400);
 }
 
 /* react-calendar in brand colors */

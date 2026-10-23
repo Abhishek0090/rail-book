@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TrainFront } from "lucide-react";
 import Avatar from "../ui/Avatar";
+import ThemeToggle from "./ThemeToggle";
+import type { Theme } from "@/lib/theme";
 
 const LINKS = [
   { href: "/pnr", label: "PNR Status" },
@@ -12,7 +14,7 @@ const LINKS = [
   { href: "/booking/trips", label: "My Trips" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ theme }: { theme: Theme }) => {
   const pathname = usePathname();
 
   return (
@@ -44,7 +46,8 @@ const Navbar = () => {
               </Link>
             );
           })}
-          <Link href="/profile" className="ml-2 shrink-0" aria-label="Profile">
+          <ThemeToggle initial={theme} />
+          <Link href="/profile" className="ml-1 shrink-0" aria-label="Profile">
             <Avatar />
           </Link>
         </nav>

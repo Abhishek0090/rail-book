@@ -131,7 +131,7 @@ function NextTrip({
       </div>
       <Link
         href={`/booking/tickets/${pnr}`}
-        className="rounded-lg bg-amber-400 px-5 py-2 text-center text-sm font-semibold text-gray-900 hover:bg-amber-300"
+        className="rounded-lg bg-amber-400 px-5 py-2 text-center text-sm font-semibold text-slate-900 hover:bg-amber-300"
       >
         View Ticket
       </Link>

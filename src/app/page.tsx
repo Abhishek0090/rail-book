@@ -284,7 +284,7 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-2">
             <OpenChatButton
               message="Mumbai to Delhi tomorrow"
-              className="flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-gray-900 hover:bg-amber-300"
+              className="flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-slate-900 hover:bg-amber-300"
             >
               Try &quot;Mumbai to Delhi tomorrow&quot; <ArrowRight size={16} />
             </OpenChatButton>

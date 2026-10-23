@@ -17,8 +17,8 @@ const LOCO_L = 128;
 const TRAIN_W = LOCO_X + LOCO_L + 2;
 
 const C = {
-  body: "var(--color-brand-800)",
-  band: "var(--color-grape-600)",
+  body: "var(--rb-blue-800)",
+  band: "var(--rb-grape-600)",
   stripe: "var(--color-amber-300)",
   roof: "#cbd5e1",
   glass: "#1e293b",
@@ -148,26 +148,26 @@ export default function TrainTrack() {
           const mx = i * 220 + 60;
           return (
             <g key={mx}>
-              <rect x={mx} y={3} width={3} height={64} fill="#cbd5e1" />
-              <path d={`M${mx + 3} 6 H${mx + 34} M${mx + 3} 13 L${mx + 30} 12`} stroke="#94a3b8" strokeWidth={1} />
+              <rect x={mx} y={3} width={3} height={64} fill="var(--track-mast)" />
+              <path d={`M${mx + 3} 6 H${mx + 34} M${mx + 3} 13 L${mx + 30} 12`} stroke="var(--track-arm)" strokeWidth={1} />
             </g>
           );
         })}
         {/* catenary: messenger wire, contact wire, droppers */}
-        <path d="M0 6 H4000" stroke="#94a3b8" strokeWidth={0.8} />
-        <path d="M0 12 H4000" stroke="#64748b" strokeWidth={1} />
+        <path d="M0 6 H4000" stroke="var(--track-arm)" strokeWidth={0.8} />
+        <path d="M0 12 H4000" stroke="var(--track-wire)" strokeWidth={1} />
         {Array.from({ length: 134 }, (_, i) => (
-          <path key={i} d={`M${i * 30 + 10} 6 V12`} stroke="#94a3b8" strokeWidth={0.5} />
+          <path key={i} d={`M${i * 30 + 10} 6 V12`} stroke="var(--track-arm)" strokeWidth={0.5} />
         ))}
         {/* ballast, sleepers, rail */}
-        <path d="M0 78 L0 70 Q2000 66 4000 70 V78 Z" fill="#e2e8f0" />
+        <path d="M0 78 L0 70 Q2000 66 4000 70 V78 Z" fill="var(--track-ballast)" />
         {Array.from({ length: 360 }, (_, i) => (
-          <circle key={i} cx={i * 11 + (i % 3) * 3} cy={71 + (i % 4) * 1.6} r={0.9} fill="#cbd5e1" />
+          <circle key={i} cx={i * 11 + (i % 3) * 3} cy={71 + (i % 4) * 1.6} r={0.9} fill="var(--track-stone)" />
         ))}
         {Array.from({ length: 400 }, (_, i) => (
-          <rect key={i} x={i * 10 + 2} y={66} width={6} height={3} fill="#94a3b8" />
+          <rect key={i} x={i * 10 + 2} y={66} width={6} height={3} fill="var(--track-sleeper)" />
         ))}
-        <rect x={0} y={64} width={4000} height={2} fill="#64748b" />
+        <rect x={0} y={64} width={4000} height={2} fill="var(--track-rail)" />
       </svg>
 
       {/* The train */}

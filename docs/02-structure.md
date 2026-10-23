@@ -13,7 +13,7 @@ railbook/
   src/
     proxy.ts                 redirects signed-out admins to /admin/login
     app/
-      layout.tsx             fonts, metadata, Provider, force-dynamic
+      layout.tsx             fonts, metadata, theme cookie, Provider, force-dynamic
       page.tsx               home page
       not-found.tsx          404 page
       globals.css            Tailwind, brand tokens, gradients, train animation
@@ -25,7 +25,7 @@ railbook/
       common/                search boxes, train cards, tables, timelines
       features/BookingCard   one booking in a list
       home/                  hero search and the train-on-track animation
-      layout/                Navbar, Footer
+      layout/                Navbar, Footer, ThemeToggle
       ui/                    Avatar, StatusBadge, LegendItem
     constants/
       stations.ts            STATIONS list + getStation()
@@ -40,6 +40,7 @@ railbook/
       bookingEngine.ts       seat locking for real bookings (+ test)
       redisLock.ts           Redis lock provider, in-process fallback
       pnr.ts                 random 10 digit PNR
+      theme.ts               theme cookie name and default (light)
     provider/provider.tsx    app chrome around every page
 ```
 

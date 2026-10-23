@@ -26,6 +26,40 @@ as the hero search button does.
 The shadcn-style variables (`--primary`, `--border`...) in `:root` are kept for future shadcn components and
 point at the same blue.
 
+## Dark and light mode
+
+Light is the default (`DEFAULT_THEME` in `src/lib/theme.ts`). The sun/moon button in the navbar
+(`components/layout/ThemeToggle.tsx`) switches the theme and saves it in a `theme` cookie (`light` or
+`dark`, kept for a year). The root layout reads that cookie on the server and renders `<html class="dark">`
+only when it says `dark`. The first paint is always
+in the right theme, with no flash. Shared names live in `src/lib/theme.ts`.
+
+Pages use plain classes (`bg-white`, `text-gray-900`, `bg-brand-50`, `text-amber-800`) and almost no
+`dark:` variants. The `.dark` block in `globals.css` remaps the palettes those classes use:
+
+| In light | In dark |
+| --- | --- |
+| `gray-50` to `gray-900` | inverted: `gray-50` is the page background, `gray-900` near-white text |
+| `bg-white` | the card color (unlayered `.dark .bg-white` rules, plus `/70`, `/80`, `/90`) |
+| `brand`, `grape`, `amber`, `emerald`, `rose` tints (50 to 300) | dark tints of the same hue |
+| their text shades (600 to 900) | lighter shades that read on dark |
+| `--background`, `--card`, `--border` | navy surfaces |
+
+Some things must look the same in both themes, so they use the fixed `--rb-*` shades instead of the
+remapped palette:
+
+- `bg-brand-gradient` and `bg-brand-gradient-dark`, which carry white text
+- the train body and livery
+- amber buttons, which use `text-slate-900` rather than `text-gray-900`
+
+The track scenery has its own `--track-*` colors for each theme.
+
+When you add UI:
+
+- Keep using the normal classes. They adapt on their own.
+- Use `text-slate-*` only for text that sits on a fixed-color background.
+- Use `dark:` only when a remap is not enough.
+
 ## Fonts
 
 `src/app/layout.tsx` imports `@fontsource-variable/plus-jakarta-sans` and

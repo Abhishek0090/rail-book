@@ -4,8 +4,24 @@
 // Existing copy: run it inside the project folder to overwrite files with this version.
 // Run:   node <this file> [target-folder] [--force]
 // Needs Node.js 18 or newer to run this script (20.9+ to run the site). Uses only built-in modules.
-const PROJECT_ENTRIES = new Set([".env.example",".gitignore","README.md","components.json","docs","drizzle.config.ts","eslint.config.mjs","next.config.ts","package-lock.json","package.json","postcss.config.mjs","public","scripts","src","tsconfig.json"]);
-const KNOWN_NAMES = ["railbook","train-ticket-system"];
+const PROJECT_ENTRIES = new Set([
+  ".env.example",
+  ".gitignore",
+  "README.md",
+  "components.json",
+  "docs",
+  "drizzle.config.ts",
+  "eslint.config.mjs",
+  "next.config.ts",
+  "package-lock.json",
+  "package.json",
+  "postcss.config.mjs",
+  "public",
+  "scripts",
+  "src",
+  "tsconfig.json",
+]);
+const KNOWN_NAMES = ["railbook", "train-ticket-system"];
 const DATA = `
 H4sIAAAAAAACCty9CXfiSLIw+lfy+b4zY5fZhFjrfjXfsNnGxoABr+2eISWlQKANLSyemvfb34nIlBB4Gbu621331jndRlLuGRl7
 RP7rQDdM5h98/eVfB+7B14MMs5cZtqaWa7KD1AE7+HoQBnrlIHWgHnw9aNZGtXpt2Prn9aDzzXX8YOIxf2F+zWajh68bJ/T+6VLf
@@ -2335,7 +2351,13 @@ aTg1o3gSTv14MjWNyAvdCEex4eJpaFumbVmW51kOtgPbNiM8JZbnWIYbTKLYJbEfri3Plv8/uFUfvUlV
 `;
 
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { gunzipSync } from "node:zlib";
 
@@ -2343,7 +2365,12 @@ const args = process.argv.slice(2);
 const force = args.includes("--force");
 const pathArg = args.find((a) => !a.startsWith("--"));
 let target = pathArg ? resolve(pathArg) : process.cwd();
-if (!pathArg && !existsSync(join(target, "package.json")) && existsSync(join(target, "railbook", "package.json"))) target = join(target, "railbook");
+if (
+  !pathArg &&
+  !existsSync(join(target, "package.json")) &&
+  existsSync(join(target, "railbook", "package.json"))
+)
+  target = join(target, "railbook");
 
 // Refuse to write over a different project by mistake.
 const pkgPath = join(target, "package.json");
@@ -2353,28 +2380,58 @@ if (existsSync(pkgPath) && !force) {
     name = JSON.parse(readFileSync(pkgPath, "utf8")).name;
   } catch {}
   if (!KNOWN_NAMES.includes(name)) {
-    console.error("This folder has a package.json for \"" + name + "\", not RailBook: " + target);
-    console.error("Run this in an empty folder or in the RailBook project, or add --force.");
+    console.error(
+      'This folder has a package.json for "' +
+        name +
+        '", not RailBook: ' +
+        target,
+    );
+    console.error(
+      "Run this in an empty folder or in the RailBook project, or add --force.",
+    );
     process.exit(1);
   }
 }
 // The manifest is allowed so that parts 2..N can run after part 1 wrote it.
-if (!existsSync(pkgPath) && existsSync(target) && readdirSync(target).some((f) => !f.endsWith(".mjs") && f !== ".railbook-files.json" && !PROJECT_ENTRIES.has(f)) && !force) {
-  console.error("The folder " + target + " is not empty and is not the RailBook project.");
-  console.error("Use an empty folder, pass the project path as an argument, or add --force.");
+if (
+  !existsSync(pkgPath) &&
+  existsSync(target) &&
+  readdirSync(target).some(
+    (f) =>
+      !f.endsWith(".mjs") &&
+      f !== ".railbook-files.json" &&
+      !PROJECT_ENTRIES.has(f),
+  ) &&
+  !force
+) {
+  console.error(
+    "The folder " + target + " is not empty and is not the RailBook project.",
+  );
+  console.error(
+    "Use an empty folder, pass the project path as an argument, or add --force.",
+  );
   process.exit(1);
 }
 
 let payload;
 try {
-  payload = JSON.parse(gunzipSync(Buffer.from(DATA.replace(/\s+/g, ""), "base64")).toString("utf8"));
+  payload = JSON.parse(
+    gunzipSync(Buffer.from(DATA.replace(/\s+/g, ""), "base64")).toString(
+      "utf8",
+    ),
+  );
 } catch {
-  console.error("This script is damaged (the paste was probably cut off or changed). Copy it again in full.");
+  console.error(
+    "This script is damaged (the paste was probably cut off or changed). Copy it again in full.",
+  );
   process.exit(1);
 }
 
-console.log("RailBook - Train Ticket Booking - full setup\nFolder: " + target + "\n");
-let written = 0, unchanged = 0;
+console.log(
+  "RailBook - Train Ticket Booking - full setup\nFolder: " + target + "\n",
+);
+let written = 0,
+  unchanged = 0;
 for (const f of payload.files) {
   const dest = join(target, f.p);
   const data = Buffer.from(f.c, f.e);
@@ -2389,11 +2446,18 @@ for (const f of payload.files) {
 }
 const bad = payload.files.filter((f) => {
   const dest = join(target, f.p);
-  return !existsSync(dest) || createHash("sha256").update(readFileSync(dest)).digest("hex") !== f.h;
+  return (
+    !existsSync(dest) ||
+    createHash("sha256").update(readFileSync(dest)).digest("hex") !== f.h
+  );
 });
-console.log("\nDone: " + written + " written, " + unchanged + " already up to date.");
+console.log(
+  "\nDone: " + written + " written, " + unchanged + " already up to date.",
+);
 if (bad.length) {
-  console.error("WARNING: these files did not verify: " + bad.map((f) => f.p).join(", "));
+  console.error(
+    "WARNING: these files did not verify: " + bad.map((f) => f.p).join(", "),
+  );
   process.exit(1);
 }
 console.log("All " + payload.files.length + " files verified.");
@@ -2402,7 +2466,21 @@ let known = [];
 try {
   known = JSON.parse(readFileSync(manifestPath, "utf8"));
 } catch {}
-writeFileSync(manifestPath, JSON.stringify([...new Set([...known, ...payload.files.map((f) => f.p)])].sort(), null, 1) + "\n");
+writeFileSync(
+  manifestPath,
+  JSON.stringify(
+    [...new Set([...known, ...payload.files.map((f) => f.p)])].sort(),
+    null,
+    1,
+  ) + "\n",
+);
 const [major, minor] = process.versions.node.split(".").map(Number);
-if (major < 20 || (major === 20 && minor < 9)) console.warn("\nNote: the site needs Node.js 20.9+ to run. You have " + process.versions.node + ".");
-console.log("\nNext:\n  1. npm ci\n  2. npm run dev   and open http://localhost:3000\n  3. Admin: http://localhost:3000/admin/login  (admin@railbook.in / admin123)\n  4. Optional: copy .env.example to .env.local and set DATABASE_URL for PostgreSQL");
+if (major < 20 || (major === 20 && minor < 9))
+  console.warn(
+    "\nNote: the site needs Node.js 20.9+ to run. You have " +
+      process.versions.node +
+      ".",
+  );
+console.log(
+  "\nNext:\n  1. npm ci\n  2. npm run dev   and open http://localhost:3000\n  3. Admin: http://localhost:3000/admin/login  (admin@railbook.in / admin123)\n  4. Optional: copy .env.example to .env.local and set DATABASE_URL for PostgreSQL",
+);

@@ -4,10 +4,17 @@ import ChatAssistant from "@/components/chat/ChatAssistant";
 import React from "react";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
+import type { Theme } from "@/lib/theme";
 
 const BRAND = "#7c3aed";
 
-const Provider = ({ children }: { children: React.ReactNode }) => {
+const Provider = ({
+  children,
+  theme,
+}: {
+  children: React.ReactNode;
+  theme: Theme;
+}) => {
   return (
     <div className="flex min-h-screen flex-col">
       <NextTopLoader
@@ -23,8 +30,13 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
         zIndex={1600}
         showAtBottom={false}
       />
-      <Toaster position="top-center" />
-      <Navbar />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: { background: "var(--card)", color: "var(--card-foreground)" },
+        }}
+      />
+      <Navbar theme={theme} />
       <div className="flex-1">{children}</div>
       <Footer />
       <ChatAssistant />
