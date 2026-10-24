@@ -22,6 +22,13 @@ Needs Node.js 20.9 or newer.
 | `REDIS_URL` | distributed seat locks | unset: in-process locks |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | admin login | `admin@railbook.in` / `admin123` |
 | `ADMIN_SESSION_SECRET` | signing the admin cookie | dev-only fallback. Set it in any shared or deployed environment |
+| `USER_SESSION_SECRET` | signing passenger session cookies | dev-only fallback. Set it in any shared or deployed environment |
+
+## Service worker in development
+
+The service worker only registers in production builds (`npm run build && npm start`), so `npm run dev`
+never serves cached bundles. To test the PWA locally, run a production build and open
+`http://localhost:3000` (service workers need HTTPS or localhost). Chapter 10 has the details.
 
 ## Two warnings you may have seen
 

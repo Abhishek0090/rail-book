@@ -17,6 +17,7 @@ export type BookedPassenger = {
 
 export type Booking = {
   bookingId: string;
+  userId: number;
   pnr: string;
   trainNo: string;
   from: string;
@@ -37,6 +38,7 @@ export const AGENT_FEE = 39.99;
 export const BOOKINGS: Booking[] = persist("bookings", () => [
   {
     bookingId: "RB2610180001",
+    userId: 1,
     pnr: "2828538983",
     trainNo: "12951",
     from: "MMCT",
@@ -72,6 +74,7 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
   {
     bookingId: "RB2610200014",
+    userId: 1,
     pnr: "4512093376",
     trainNo: "22177",
     from: "CSMT",
@@ -97,6 +100,7 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
   {
     bookingId: "RB2610210027",
+    userId: 1,
     pnr: "6620418851",
     trainNo: "12009",
     from: "MMCT",
@@ -122,6 +126,7 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
   {
     bookingId: "RB2610220031",
+    userId: 1,
     pnr: "7301928840",
     trainNo: "12301",
     from: "HWH",
@@ -157,6 +162,7 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
   {
     bookingId: "RB2609050008",
+    userId: 1,
     pnr: "8929929713",
     trainNo: "12952",
     from: "NDLS",
@@ -182,6 +188,7 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
   {
     bookingId: "RB2607200019",
+    userId: 1,
     pnr: "2508534421",
     trainNo: "11055",
     from: "LTT",
@@ -207,7 +214,9 @@ export const BOOKINGS: Booking[] = persist("bookings", () => [
   },
 ]);
 
-export const getBookings = () => BOOKINGS;
+// All bookings (admin), or one user's bookings.
+export const getBookings = (userId?: number) =>
+  userId === undefined ? BOOKINGS : BOOKINGS.filter((b) => b.userId === userId);
 
 export const getBookingByPnr = (pnr: string) =>
   BOOKINGS.find((b) => b.pnr === pnr);

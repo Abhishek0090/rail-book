@@ -6,20 +6,19 @@ import { format, parseISO } from "date-fns";
 import { toast } from "react-hot-toast";
 import { ChevronDown, ChevronUp, Lock } from "lucide-react";
 import { AGENT_FEE, CONVENIENCE_FEE } from "@/data/bookings";
-import { CURRENT_USER } from "@/data/user";
 import type { SeatStatus } from "@/data/trains";
 import type { Trip } from "../PassengerForm";
 import { createBookingAction } from "../../actions";
 import type { DraftPassenger } from "../../passengers";
 
-const PAYMENT_OPTIONS = [
+const paymentOptions = (walletBalance: number) => [
   { id: "upi", title: "UPI", subtitle: "Zero payment gateway charges" },
   { id: "card", title: "Credit / Debit / ATM Card", gateway: 0.018 },
   { id: "netbanking", title: "Net Banking", gateway: 0.012 },
   {
     id: "wallet",
     title: "RailBook Wallet",
-    subtitle: `Balance Rs ${CURRENT_USER.walletBalance}`,
+    subtitle: `Balance Rs ${walletBalance}`,
   },
 ];
 
@@ -28,12 +27,15 @@ export default function SummaryForm({
   farePerPassenger,
   seat,
   passengers,
+  walletBalance,
 }: {
   trip: Trip;
   farePerPassenger: number;
   seat: { status: SeatStatus; count: number };
   passengers: DraftPassenger[];
+  walletBalance: number;
 }) {
+  const PAYMENT_OPTIONS = paymentOptions(walletBalance);
   const router = useRouter();
   const [paying, startPaying] = useTransition();
   const [showFare, setShowFare] = useState(true);
@@ -82,7 +84,7 @@ export default function SummaryForm({
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10">
       {/* Trip + fare left, payment right on large screens */}
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
       <div className="space-y-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
         {/* Header */}
         <div className="text-center border-b pb-3">

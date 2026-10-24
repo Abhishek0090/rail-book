@@ -69,6 +69,7 @@ export default function TravelDatePicker({ value, onChange }: Props) {
               setOpen(false);
             }}
             value={value}
+            className="rb-calendar"
             minDate={new Date()}
             maxDate={addDays(new Date(), 120)}
           />

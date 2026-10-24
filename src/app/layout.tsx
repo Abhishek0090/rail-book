@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 // Fonts are bundled from npm, so builds never download from Google Fonts.
 import "@fontsource-variable/plus-jakarta-sans";
 import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
 import { cookies } from "next/headers";
 import Provider from "@/provider/provider";
+import { getCurrentUser } from "@/lib/userAuth";
 import { DEFAULT_THEME, THEME_COOKIE, type Theme } from "@/lib/theme";
 
 // Pages read the in-memory store that admins edit, so render on each request.
@@ -17,6 +18,19 @@ export const metadata: Metadata = {
   },
   description:
     "Search trains, check PNR status and live running status, and book train tickets with RailBook.",
+  applicationName: "RailBook",
+  // iOS home-screen app (PWA). The manifest comes from app/manifest.ts.
+  appleWebApp: { capable: true, title: "RailBook", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#4f46e5" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e1b4b" },
+  ],
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default async function RootLayout({
@@ -29,10 +43,14 @@ export default async function RootLayout({
   const theme: Theme =
     saved === "light" || saved === "dark" ? saved : DEFAULT_THEME;
 
+  const user = await getCurrentUser();
+
   return (
     <html lang="en" className={theme === "dark" ? "dark" : undefined}>
       <body className="antialiased">
-        <Provider theme={theme}>{children}</Provider>
+        <Provider theme={theme} user={user && { name: user.name }}>
+          {children}
+        </Provider>
       </body>
     </html>
   );

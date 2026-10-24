@@ -105,7 +105,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-brand-gradient-soft px-4 pt-14 pb-32">
+      <section className="relative bg-brand-gradient-soft px-4 pt-14 pb-32">
         {/* Rails and a running train along the bottom edge */}
         <TrainTrack />
 
@@ -140,7 +140,7 @@ export default function Home() {
 
       {/* Quick services */}
       <section className="relative mx-auto max-w-6xl px-4 pt-10">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {SERVICES.map(({ href, label, desc, icon: Icon }) => (
             <Link
               key={href}
@@ -154,7 +154,7 @@ export default function Home() {
               <p className="text-xs text-gray-500">{desc}</p>
             </Link>
           ))}
-          <OpenChatButton className="group col-span-2 rounded-2xl bg-brand-gradient p-4 text-left text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:col-span-1">
+          <OpenChatButton className="group col-span-2 rounded-2xl bg-brand-gradient p-4 text-left text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md lg:col-span-1">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
               <Bot size={20} />
             </span>

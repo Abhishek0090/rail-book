@@ -6,19 +6,31 @@
 | --- | --- | --- |
 | `src/constants/stations.ts` | `STATIONS` (16) | `getStation(code)` |
 | `src/data/trains.ts` | `TRAINS` (7) with routes, classes, running days | `getTrain`, `getSegment`, `searchTrains`, `calculateFare`, `getSeatStatus`, `getLiveStatus`, `trainOptions` |
-| `src/data/bookings.ts` | `BOOKINGS` (6 to start) | `getBookings`, `getBookingByPnr`, `getBookingById`, `isUpcoming`, `getBookingDetails` |
+| `src/data/bookings.ts` | `BOOKINGS` (6 to start, all owned by user 1) | `getBookings(userId?)`, `getBookingByPnr`, `getBookingById`, `isUpcoming`, `getBookingDetails` |
+| `src/data/users.ts` | users with scrypt password hashes (1 demo user to start) | `getUser`, `authenticate`, `createUser`, `DEMO_USER` |
+| `src/data/user.ts` | types only: `PublicUser`, `SavedPassenger` | `initials` (safe for client components) |
 | `src/data/admin.ts` | `COACHES` (generated per train) | `getCoaches`, `getSeats`, `getAdminStats`, `defaultCoaches` |
-| `src/data/user.ts` | `CURRENT_USER` | `initials` |
-| `src/data/mutations.ts` | every write, with validation | `addStation`, `deleteStation`, `addTrain`, `deleteTrain`, `addCoach`, `deleteCoach`, `setBookingStatus`, `createBooking` |
+| `src/data/mutations.ts` | every booking and admin write, with validation | `addStation`, `deleteStation`, `addTrain`, `deleteTrain`, `addCoach`, `deleteCoach`, `setBookingStatus`, `createBooking` |
 | `src/data/persist.ts` | `persist(key, initial)` | keeps the arrays on `globalThis` |
 
-`persist()` keeps each array on `globalThis`, so admin changes survive dev hot reloads. They reset when the
-server restarts. Arrays are mutated in place (`push`, `splice`), so every module that imported them sees the
-change.
+### How the store works
 
-Only server code should read the store. Client components get data as props from a server page. A client
-bundle has its own copy of these modules and would not see changes. That is why `HeroSearch` receives
-`stations` and `TrainNumberSearch` receives `trains`.
+- `persist()` keeps each array on `globalThis`, so changes survive dev hot reloads. They reset when the
+  server restarts, and every server instance has its own copy.
+- Arrays are mutated in place (`push`, `splice`), so every module that imported them sees the change.
+- Only server code should read the store. Client components get data as props from a server page. A client
+  bundle has its own copy of these modules and would not see changes. That is why:
+  - `HeroSearch` receives `stations`
+  - `TrainNumberSearch` receives `trains`
+  - `PassengerForm` receives the signed-in `user`
+- `users.ts` imports Node's crypto, so never import it from a `"use client"` file. Use the types in
+  `user.ts` there instead.
+
+### Ownership
+
+Every booking has a `userId`. The passenger pages and APIs read `getBookings(user.id)`. The ticket page
+returns 404 for someone else's PNR. Admin pages call `getBookings()` with no argument to see everything.
+The public PNR status page (`/pnr/[n]`) shows any PNR, like real railway enquiries.
 
 ### How the numbers are made
 
@@ -30,7 +42,7 @@ bundle has its own copy of these modules and would not see changes. That is why 
   allows for boarding on day 2 of the journey.
 - **Live status.** `getLiveStatus` marks the middle stop as current and adds each stop's `avgDelayMin`.
 
-### Validation rules (mutations.ts)
+### Validation rules
 
 | Rule | Detail |
 | --- | --- |
@@ -41,31 +53,14 @@ bundle has its own copy of these modules and would not see changes. That is why 
 | Deleting a train | Not allowed when bookings reference it |
 | Deleting a station | Not allowed while a route uses it |
 | Deleting a coach | The last coach of a class cannot be deleted |
-| Bookings | Valid train, class and route. Date from today. 1 to 6 passengers with name, age 1 to 120 and gender |
+| Bookings | Signed-in user. Valid train, class and route. Date from today. 1 to 6 passengers with name, age 1 to 120 and gender |
+| Accounts | Name 3 to 60 characters, valid and unique email, 10 to 15 digit phone, age 5 to 120, password 8+ characters |
 
-They throw `MutationError`. Server actions and API routes turn that into a readable message or a 400.
+Booking and admin writes throw `MutationError`, and account writes throw `AuthError`. Server actions and
+API routes turn these into a readable message or a 400/401.
 
 ## Moving to PostgreSQL
 
-The schema already exists in `src/db/schema/` (stations, trains, routes, coaches, seats, bookings,
-transactions, users), with migrations in `src/drizzle/`. `src/db/index.ts` creates a `pg` Pool, which
-connects lazily, so importing it never crashes the server.
-
-1. Copy `.env.example` to `.env.local` and set `DATABASE_URL`.
-2. Run the migrations: `npx drizzle-kit migrate`.
-3. Seed sample rows: open `GET /api/test`. It runs `src/db/seed.ts` for train 11055 with its route, coaches
-   and seats.
-4. Replace the store one module at a time. Keep each function's name and return shape, and change its body
-   to a Drizzle query, for example:
-
-```ts
-// src/data/trains.ts
-export const getTrain = async (number: string) =>
-  (await db.select().from(trains).where(eq(trains.number, number)))[0];
-```
-
-5. Functions that become `async` need `await` at their call sites. They are all in server components and
-   server actions, so the change is mechanical.
-6. Point `createBooking` at the real flow in `POST /api/booking/create`. It locks the seat
-   (`withSeatLock`) and writes the booking and transaction in one DB transaction.
-7. Delete `persist.ts` once nothing imports it.
+The Drizzle schema (`src/db/schema/`), the migrations and a seed script are already in the repo.
+[Chapter 12](12-building-apis.md#connecting-postgresql) walks through replacing this store one module at a
+time.

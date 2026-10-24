@@ -1,8 +1,17 @@
 import { db } from "@/db";
 import { users } from "@/db/schema/users";
 import { NextResponse } from "next/server";
+import { getAdminSession } from "@/lib/adminAuth";
 
+// Admin-only raw insert into the PostgreSQL users table. Passengers sign up
+// through /register or POST /api/auth/register, which hash the password.
 export async function POST(request: Request) {
+  if (!(await getAdminSession())) {
+    return NextResponse.json(
+      { success: false, message: "Admin login required" },
+      { status: 401 },
+    );
+  }
   try {
     const { name, email, phone, password_hash } = await request.json();
 

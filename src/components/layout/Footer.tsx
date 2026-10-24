@@ -1,4 +1,5 @@
 import Link from "next/link";
+import InstallButton from "@/components/pwa/InstallButton";
 
 const Footer = () => {
   return (
@@ -8,7 +9,8 @@ const Footer = () => {
           <span className="font-semibold text-gray-800">RailBook</span> - train
           tickets, PNR and live status in one place.
         </p>
-        <nav className="flex flex-wrap gap-4">
+        <nav className="flex flex-wrap items-center gap-4">
+          <InstallButton />
           <Link href="/dashboard" className="hover:text-brand-700">
             Dashboard
           </Link>

@@ -1,21 +1,22 @@
 import Link from "next/link";
-import { Mail, MapPin, Phone, User, Wallet } from "lucide-react";
+import { LogOut, Mail, MapPin, Phone, User, Wallet } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
 import { getBookings, isUpcoming } from "@/data/bookings";
-import { CURRENT_USER } from "@/data/user";
+import { requireUser } from "@/lib/userAuth";
+import { logoutAction } from "../(auth)/actions";
 
 export const metadata = { title: "Profile" };
 
-const ProfilePage = () => {
-  const user = CURRENT_USER;
-  const bookings = getBookings();
+const ProfilePage = async () => {
+  const user = await requireUser("/profile");
+  const bookings = getBookings(user.id);
   const upcoming = bookings.filter((b) => isUpcoming(b)).length;
 
   const details = [
     { icon: Mail, label: "Email", value: user.email },
     { icon: Phone, label: "Mobile", value: user.phone },
     { icon: User, label: "IRCTC ID", value: user.irctcId },
-    { icon: MapPin, label: "City", value: user.city },
+    { icon: MapPin, label: "City", value: user.city || "Not set" },
   ];
 
   return (
@@ -23,7 +24,7 @@ const ProfilePage = () => {
       <div className="mx-auto max-w-4xl space-y-6">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 rounded-2xl bg-brand-gradient-dark p-6 text-white sm:flex-row">
-          <Avatar size={72} />
+          <Avatar name={user.name} size={72} />
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-semibold">{user.name}</h1>
             <p className="text-sm text-white/75">
@@ -91,6 +92,11 @@ const ProfilePage = () => {
           <span className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2 text-sm text-gray-600">
             <Wallet size={16} /> Wallet balance Rs {user.walletBalance}
           </span>
+          <form action={logoutAction} className="sm:ml-auto">
+            <button className="flex items-center gap-2 rounded-lg border border-rose-200 bg-white px-5 py-2 text-sm font-medium text-rose-700 hover:bg-rose-50">
+              <LogOut size={16} /> Log out
+            </button>
+          </form>
         </div>
       </div>
     </div>

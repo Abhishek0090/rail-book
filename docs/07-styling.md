@@ -93,6 +93,42 @@ CSS in `globals.css`:
 
 If you change `COACHES` or `COACH_L`, update the `-1760px` start offset too, or the train will pop in.
 
+## Responsive layout
+
+The app is laid out mobile first and checked at 390px (phone), 820px (tablet) and 1280px (desktop).
+
+| Area | Phone | Tablet (`sm`/`md`) | Desktop (`lg`) |
+| --- | --- | --- | --- |
+| Navbar | logo, theme, avatar, hamburger menu | inline links from `md` (768px) | same |
+| Hero search card | stacked; swap button floats between From and To | From / To, then Date / Search | one row |
+| Quick services | 2 columns, chat card full width | 3 columns | 5 columns |
+| Booking pages (passenger details, summary, ticket) | one column | one column | two columns: details left, sticky summary or actions right |
+| Tables (schedule, PNR, admin, ticket passengers) | scroll sideways inside their card | same | full width |
+
+Rules that keep it from breaking:
+
+- The two-column pages use `grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px]`. The explicit `grid-cols-1`
+  matters: without it, a wide table inside a card stretches the whole page on phones.
+- Wide content goes inside an `overflow-x-auto` wrapper. Never put `overflow-hidden` on a section that
+  contains a dropdown. The hero section has no overflow clipping, so the station list and calendar can
+  extend below it. Only the train track clips itself.
+- The floating chat launcher sits bottom right. The footer has extra bottom padding on phones so the
+  launcher never covers its links.
+
+To re-check after layout changes, emulate real device widths. Headless browsers have a minimum window
+width of about 500px, so use DevTools device mode or the Chrome DevTools Protocol
+(`Emulation.setDeviceMetricsOverride`). Then confirm `document.documentElement.scrollWidth` equals the
+viewport width on every page.
+
+## Scrollbars, calendar and other details
+
+- **Scrollbars.** They are thin (8px) and rounded, with gray-300 thumbs in theme colors. Both
+  `scrollbar-width`/`scrollbar-color` and `::-webkit-scrollbar` rules are in `globals.css`.
+- **Date picker.** react-calendar's own stylesheet loads after ours, so every override is scoped to
+  `.react-calendar.rb-calendar` (the `className` passed in `TravelDatePicker`). It uses the app font,
+  no border, brand hover, purple weekends and the gradient for the selected day, in both themes.
+- **Focus.** Inputs show a brand-blue border on focus.
+
 ## Layout conventions
 
 - Cards: `rounded-2xl border border-gray-200 bg-white shadow-sm`.

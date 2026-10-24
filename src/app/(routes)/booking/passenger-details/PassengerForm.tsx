@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { toast } from "react-hot-toast";
 import { Check, Trash2, X } from "lucide-react";
-import { CURRENT_USER } from "@/data/user";
+import type { PublicUser } from "@/data/user";
 import { encodePassenger } from "../passengers";
 
 export type Trip = {
@@ -31,14 +31,20 @@ type Passenger = {
 
 const MAX_PASSENGERS = 6;
 
-export default function PassengerForm({ trip }: { trip: Trip }) {
+export default function PassengerForm({
+  trip,
+  user,
+}: {
+  trip: Trip;
+  user: PublicUser;
+}) {
   const router = useRouter();
   const { trainNo, classCode, fromCode, toCode, date } = trip;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [passengers, setPassengers] = useState<Passenger[]>([]);
-  const [phone, setPhone] = useState(CURRENT_USER.phone);
-  const [email, setEmail] = useState(CURRENT_USER.email);
+  const [phone, setPhone] = useState(user.phone);
+  const [email, setEmail] = useState(user.email);
 
   const isAdded = (name: string) => passengers.some((p) => p.name === name);
 
@@ -71,7 +77,7 @@ export default function PassengerForm({ trip }: { trip: Trip }) {
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10">
       {/* Two columns on large screens: passengers left, journey + pay right */}
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <div className="space-y-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
         {/* Header */}
         <div className="rounded-xl bg-brand-gradient-dark p-4 text-white">
@@ -94,7 +100,7 @@ export default function PassengerForm({ trip }: { trip: Trip }) {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {CURRENT_USER.savedPassengers.map((p) => (
+            {user.savedPassengers.map((p) => (
               <button
                 key={p.name}
                 disabled={isAdded(p.name)}
@@ -184,7 +190,7 @@ export default function PassengerForm({ trip }: { trip: Trip }) {
         <section className="space-y-2">
           <h2 className="font-medium">Your IRCTC ID</h2>
           <div className="flex justify-between items-center border rounded-lg p-2">
-            <span className="text-sm">{CURRENT_USER.irctcId}</span>
+            <span className="text-sm">{user.irctcId}</span>
             <button className="text-brand-600 text-sm">Change</button>
           </div>
         </section>

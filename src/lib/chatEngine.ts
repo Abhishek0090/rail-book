@@ -6,7 +6,7 @@ import { addDays, format, isValid, parse, parseISO, startOfDay } from "date-fns"
 import { STATIONS, getStation, type Station } from "@/constants/stations";
 import { getBookingByPnr, getBookingDetails } from "@/data/bookings";
 import { createBooking, MutationError } from "@/data/mutations";
-import { CURRENT_USER } from "@/data/user";
+import type { PublicUser } from "@/data/user";
 import {
   CLASS_NAMES,
   getTrain,
@@ -289,7 +289,12 @@ const handleGlobal = (text: string): ChatMessage[] | null => {
 
 // ---------- main entry ----------
 
-export function reply(state: ChatState, input: string): [ChatState, ChatMessage[]] {
+// user is the signed-in passenger, or null; booking needs a login.
+export function reply(
+  state: ChatState,
+  input: string,
+  user: PublicUser | null,
+): [ChatState, ChatMessage[]] {
   const text = input.trim();
   const lower = text.toLowerCase();
 
@@ -426,16 +431,28 @@ export function reply(state: ChatState, input: string): [ChatState, ChatMessage[
         ];
       }
       if (/confirm|yes|pay|book/.test(lower)) {
+        if (!user) {
+          return [
+            { ...state, step: "confirm" },
+            [
+              bot("Please log in to book. Your trip details stay here; say 'Confirm and pay' again after logging in.", {
+                link: { href: "/login?next=/", label: "Log in or sign up" },
+                chips: ["Confirm and pay", "Start over"],
+              }),
+            ],
+          ];
+        }
         // Demo payment: books straight away for the user's saved passengers.
         try {
           const booking = createBooking({
+            userId: user.id,
             trainNo: state.trainNo!,
             classCode: state.cls!,
             from: state.from!,
             to: state.to!,
             date: state.date!,
             passengers: Array.from({ length: state.pax! }, (_, i) => {
-              const saved = CURRENT_USER.savedPassengers[i];
+              const saved = user.savedPassengers[i];
               return saved
                 ? { name: saved.name, age: saved.age, gender: saved.gender, berth: saved.berth }
                 : { name: `Passenger ${i + 1}`, age: 30, gender: "Male" as const, berth: "No Preference" };

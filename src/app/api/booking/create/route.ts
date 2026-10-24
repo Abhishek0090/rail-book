@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { bookings } from "@/db/schema/bookings";
 import { transactions } from "@/db/schema/transactions";
 import { eq } from "drizzle-orm";
+import { getCurrentUser } from "@/lib/userAuth";
 
 type CreateBookingBody = {
   trainId?: number;
@@ -13,22 +14,32 @@ type CreateBookingBody = {
   classCode?: string;
   seatId?: number;
   paymentTransactionId?: string;
-  userId?: number;
   sourceStationId?: number;
   destinationStationId?: number;
   coachId?: number;
   fare?: string;
 };
 
+// PostgreSQL booking flow with seat locking (chapter 12). The user always
+// comes from the session cookie, never from the request body.
 export async function POST(request: Request) {
-  const body = (await request.json()) as CreateBookingBody;
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Log in to book" }, { status: 401 });
+  }
+  if (!process.env.DATABASE_URL) {
+    return NextResponse.json(
+      { error: "DATABASE_URL is not set; the app books through the in-memory store" },
+      { status: 503 },
+    );
+  }
+  const body = (await request.json().catch(() => ({}))) as CreateBookingBody;
   const required = [
     body.trainId,
     body.journeyDate,
     body.classCode,
     body.seatId,
     body.paymentTransactionId,
-    body.userId,
     body.sourceStationId,
     body.destinationStationId,
     body.coachId,
@@ -71,7 +82,7 @@ export async function POST(request: Request) {
         const [booking] = await tx
           .insert(bookings)
           .values({
-            user_id: body.userId!,
+            user_id: user.id,
             train_id: body.trainId!,
             source_station_id: body.sourceStationId!,
             destination_station_id: body.destinationStationId!,

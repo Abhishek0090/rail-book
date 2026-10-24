@@ -12,8 +12,11 @@ export async function GET(
   }
 
   const { train, segment, fare } = getBookingDetails(booking);
+  // Public endpoint: never expose who owns the booking.
+  const { userId: _owner, ...publicBooking } = booking;
+  void _owner;
   return Response.json({
-    ...booking,
+    ...publicBooking,
     trainName: train.name,
     departTime: segment.departTime,
     arriveTime: segment.arriveTime,

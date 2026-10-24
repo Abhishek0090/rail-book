@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireUser } from "@/lib/userAuth";
 import { addDays, format, parseISO } from "date-fns";
 import {
   Ban,
@@ -23,8 +24,10 @@ export default async function TicketPage({
   params: Promise<{ ticketId: string }>;
 }) {
   const { ticketId } = await params;
+  const user = await requireUser(`/booking/tickets/${ticketId}`);
   const booking = getBookingByPnr(ticketId);
-  if (!booking) notFound();
+  // Tickets are private: other users get a 404, not someone else's ticket.
+  if (!booking || booking.userId !== user.id) notFound();
 
   const { train, segment, fare } = getBookingDetails(booking);
   const departDate = parseISO(booking.journeyDate);
@@ -51,7 +54,7 @@ export default async function TicketPage({
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8">
       {/* Ticket left, actions / fare / QR right on large screens */}
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
         {/* PNR Section */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-4">
           <div className="text-center">
@@ -110,22 +113,32 @@ export default async function TicketPage({
 
             <div className="border-t pt-3 text-sm">
               <p className="font-medium mb-2">Passenger Status</p>
-              <div className="grid grid-cols-4 text-xs text-gray-500">
-                <span>Name</span>
-                <span>Current Status</span>
-                <span>Coach / Seat</span>
-                <span>Berth</span>
+              <div className="-mx-1 overflow-x-auto px-1">
+                <table className="w-full min-w-[320px] text-left">
+                  <thead className="text-xs text-gray-500">
+                    <tr>
+                      <th className="pb-1 pr-3 font-normal">Name</th>
+                      <th className="pb-1 pr-3 font-normal">Status</th>
+                      <th className="pb-1 pr-3 font-normal">Coach / Seat</th>
+                      <th className="pb-1 font-normal">Berth</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {booking.passengers.map((p) => (
+                      <tr key={p.name} className="whitespace-nowrap">
+                        <td className="py-1 pr-3">{p.name}</td>
+                        <td className="py-1 pr-3 font-medium text-brand-700">
+                          {p.currentStatus}
+                        </td>
+                        <td className="py-1 pr-3">
+                          {p.coach ? `${p.coach} / ${p.seat}` : "-"}
+                        </td>
+                        <td className="py-1">{p.berth ?? "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              {booking.passengers.map((p) => (
-                <div key={p.name} className="grid grid-cols-4 text-sm mt-1">
-                  <span className="truncate pr-2">{p.name}</span>
-                  <span>{p.currentStatus}</span>
-                  <span>
-                    {p.coach ? `${p.coach} / ${p.seat}` : "-"}
-                  </span>
-                  <span>{p.berth ?? "-"}</span>
-                </div>
-              ))}
             </div>
           </div>
 

@@ -76,3 +76,6 @@ These need the admin cookie and return 401 without it.
 
 Public read routes: `/api/trains/search`, `/api/trains/availability`, `/api/routes`, `/api/coaches`,
 `/api/pnr/[pnr]`.
+
+The complete list, including the seed route `GET /api/test` and `POST /api/post-user` (both admin only), is in
+[chapter 11](11-api-reference.md#admin-admin-login-required).

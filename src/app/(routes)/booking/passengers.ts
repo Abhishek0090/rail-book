@@ -1,5 +1,5 @@
 // Passengers travel between booking steps in the URL as p=name|age|gender|berth.
-import { CURRENT_USER } from "@/data/user";
+import type { SavedPassenger } from "@/data/user";
 
 export type DraftPassenger = {
   name: string;
@@ -22,6 +22,7 @@ export const encodePassenger = (p: {
 export function parsePassengers(
   raw: string | string[] | undefined,
   count: number,
+  saved: SavedPassenger[],
 ): DraftPassenger[] {
   const list = (Array.isArray(raw) ? raw : raw ? [raw] : [])
     .map((entry) => {
@@ -43,9 +44,9 @@ export function parsePassengers(
   if (list.length) return list;
 
   return Array.from({ length: count }, (_, i): DraftPassenger => {
-    const saved = CURRENT_USER.savedPassengers[i];
-    return saved
-      ? { ...saved }
+    const passenger = saved[i];
+    return passenger
+      ? { ...passenger }
       : { name: `Passenger ${i + 1}`, age: 30, gender: "Male", berth: "No Preference" };
   });
 }

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import BookingCard from "@/components/features/BookingCard";
 import { getBookingDetails, getBookings, isUpcoming } from "@/data/bookings";
-import { CURRENT_USER } from "@/data/user";
+import { requireUser } from "@/lib/userAuth";
 
 export const metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -22,8 +22,9 @@ const QUICK_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/train/schedule", label: "Schedule", icon: CalendarClock },
 ];
 
-export default function DashboardPage() {
-  const bookings = getBookings();
+export default async function DashboardPage() {
+  const user = await requireUser("/dashboard");
+  const bookings = getBookings(user.id);
   const upcoming = bookings
     .filter((b) => isUpcoming(b))
     .sort((a, b) => a.journeyDate.localeCompare(b.journeyDate));
@@ -36,7 +37,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="mx-auto max-w-5xl space-y-6">
         <h1 className="text-2xl font-bold tracking-tight">
-          Welcome back, {CURRENT_USER.name.split(" ")[0]}
+          Welcome back, {user.name.split(" ")[0]}
         </h1>
 
         {/* Stats */}
@@ -46,7 +47,7 @@ export default function DashboardPage() {
           <StatCard label="Total spent" value={`Rs ${spent}`} />
           <StatCard
             label="Wallet balance"
-            value={`Rs ${CURRENT_USER.walletBalance}`}
+            value={`Rs ${user.walletBalance}`}
           />
         </div>
 

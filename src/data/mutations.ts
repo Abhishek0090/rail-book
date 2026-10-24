@@ -193,6 +193,7 @@ export function deleteCoach(trainNo: string, code: string) {
 // ---------- bookings ----------
 
 export type NewBooking = {
+  userId: number;
   trainNo: string;
   classCode: string;
   from: string;
@@ -201,7 +202,7 @@ export type NewBooking = {
   passengers: { name: string; age: number; gender: BookedPassenger["gender"]; berth: string }[];
 };
 
-// Creates a booking for the current user. Status follows the dummy
+// Creates a booking owned by input.userId (the signed-in passenger). Status follows the dummy
 // availability: AVL -> confirmed seats, RAC -> RAC, WL -> waitlist.
 export function createBooking(input: NewBooking) {
   const train = getTrain(input.trainNo) ?? fail("Train not found");
@@ -239,6 +240,7 @@ export function createBooking(input: NewBooking) {
   while (BOOKINGS.some((b) => b.pnr === pnr)) pnr = generatePnr();
 
   const booking: Booking = {
+    userId: input.userId,
     bookingId: `RB${format(now, "yyMMdd")}${String(BOOKINGS.length + 1).padStart(4, "0")}`,
     pnr,
     trainNo: train.number,

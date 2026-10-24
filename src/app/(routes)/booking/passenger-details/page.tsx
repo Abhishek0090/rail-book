@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PassengerForm from "./PassengerForm";
 import { resolveTrip, type TripParams } from "./trip";
+import { requireUser } from "@/lib/userAuth";
 
 export const metadata = { title: "Passenger details" };
 
@@ -9,7 +10,11 @@ export default async function PassengerDetailsPage({
 }: {
   searchParams: Promise<TripParams>;
 }) {
-  const resolved = resolveTrip(await searchParams);
+  const params = await searchParams;
+  const user = await requireUser(
+    `/booking/passenger-details?${new URLSearchParams(params as Record<string, string>)}`,
+  );
+  const resolved = resolveTrip(params);
   if (!resolved) {
     return (
       <div className="p-10 text-center text-gray-600">
@@ -20,5 +25,5 @@ export default async function PassengerDetailsPage({
       </div>
     );
   }
-  return <PassengerForm trip={resolved.trip} />;
+  return <PassengerForm trip={resolved.trip} user={user} />;
 }

@@ -16,8 +16,8 @@ Under the hood this dispatches a `railbook:open-chat` window event (`openChat()`
 | File | Role |
 | --- | --- |
 | `components/chat/ChatAssistant.tsx` | Client UI: window, messages, quick-reply chips, input. Keeps the conversation state in a ref |
-| `components/chat/actions.ts` | Server actions `chatReply(state, text)` and `chatGreeting()` |
-| `lib/chatEngine.ts` | All logic. `reply(state, text)` returns `[nextState, botMessages]` |
+| `components/chat/actions.ts` | Server actions `chatReply(state, text)` and `chatGreeting()`. `chatReply` reads the session and passes the user in |
+| `lib/chatEngine.ts` | All logic. `reply(state, text, user)` returns `[nextState, botMessages]` |
 
 The engine runs on the server, so it sees trains admins added and can create bookings. The client sends the
 whole `ChatState` with each message. The server keeps no chat state between messages.
@@ -54,8 +54,14 @@ fills all three at once and jumps straight to the train list.
 | Passengers | 1 to 6 |
 | Any time | `PNR 2828538983`, `live status 12951`, `schedule 22177`, `help`, `start over` |
 
-On "Confirm and pay" the engine calls `createBooking()` for the user's saved passengers (then "Passenger N")
-and replies with the PNR, the status and a "View e-ticket" link.
+Anyone can search, check a PNR or ask about a train in chat. Booking needs a login:
+
+- **Signed out:** "Confirm and pay" answers with a "Log in or sign up" link and keeps the trip. The chat
+  lives in the root layout, so its state survives the trip to `/login` and back. Saying "Confirm and pay"
+  again books it.
+- **Signed in:** the engine calls `createBooking()` with the user's id and saved passengers (then
+  "Passenger N"). It replies with the PNR, the status and a "View e-ticket" link. The booking shows up in
+  My Trips.
 
 ## Adding an LLM later
 

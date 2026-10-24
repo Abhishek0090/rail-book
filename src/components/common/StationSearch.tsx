@@ -36,7 +36,7 @@ const StationSearch = ({ label, stations, value, onSelect }: Props) => {
     <div className="relative min-w-0 flex-1" ref={ref}>
       <div
         onClick={() => setOpen(!open)}
-        className="flex cursor-pointer flex-col gap-1 px-6 py-5"
+        className="flex cursor-pointer flex-col gap-1 py-5 pl-6 pr-16 sm:pr-10"
       >
         <span className="text-gray-400 text-sm">{label}</span>
         <strong className="truncate text-base">
@@ -57,7 +57,7 @@ const StationSearch = ({ label, stations, value, onSelect }: Props) => {
               onChange={(e) => {
                 setQuery(e.target.value);
               }}
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:border-green-500"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:border-brand-500"
             />
           </div>
 

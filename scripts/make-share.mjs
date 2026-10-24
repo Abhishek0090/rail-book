@@ -113,6 +113,7 @@ const TOP_LEVEL = JSON.stringify([...new Set(files.map((f) => f.p.split("/")[0])
 const NEXT_STEPS = [
   "npm ci",
   "npm run dev   and open http://localhost:3000",
+  "Passenger login: abhishek.pal@example.com / railbook123  (or sign up)",
   "Admin: http://localhost:3000/admin/login  (admin@railbook.in / admin123)",
   "Optional: copy .env.example to .env.local and set DATABASE_URL for PostgreSQL",
 ];
@@ -451,8 +452,9 @@ writeFileSync(
   join(OUT, "HOW-TO-SETUP.md"),
   `# ${TITLE} - set up or update on another machine
 
-A Next.js train booking app: search, booking flow, PNR and live status, a chat booking assistant and an admin
-dashboard, all running on dummy data until PostgreSQL is wired in.
+A Next.js train booking app: search, passenger accounts, booking flow, PNR and live status, a chat booking
+assistant, an admin dashboard, light and dark mode, and an installable PWA. It runs on dummy data until
+PostgreSQL is wired in.
 How the code works is documented in \`docs/README.md\` (included in these scripts).
 
 These scripts contain the whole project (${files.length} files, compressed). Generated ${new Date().toISOString().slice(0, 10)} with \`npm run share\`.
@@ -472,6 +474,7 @@ npm run dev
 \`\`\`
 
 Then open http://localhost:3000. Needs Node.js 20.9 or newer (\`node -v\`).
+Passenger demo login: \`abhishek.pal@example.com\` / \`railbook123\` (or create an account).
 The admin dashboard is at http://localhost:3000/admin/login (demo login \`admin@railbook.in\` / \`admin123\`).
 
 No Node yet? Use \`${NAME}-setup.sh\` (${size(`${NAME}-setup.sh`)}, macOS / Linux / Git Bash: \`bash ${NAME}-setup.sh\`) or

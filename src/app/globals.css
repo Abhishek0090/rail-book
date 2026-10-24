@@ -319,33 +319,87 @@
 .dark .ring-white {
   --tw-ring-color: var(--card);
 }
-.dark .react-calendar {
-  background: var(--card);
-  color: var(--foreground);
+/* Thin, rounded scrollbars everywhere, in theme colors. scrollbar-width and
+   scrollbar-color cover Firefox and current Chrome/Edge; the ::-webkit rules
+   cover older Chromium and Safari. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) transparent;
 }
-.dark .react-calendar__tile:enabled:hover,
-.dark .react-calendar__navigation button:enabled:hover {
-  background: var(--color-gray-100);
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-.dark .react-calendar__tile:disabled,
-.dark .react-calendar__navigation button:disabled {
+::-webkit-scrollbar-track {
   background: transparent;
-  color: var(--color-gray-400);
+}
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-color: var(--color-gray-300);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-400);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
-/* react-calendar in brand colors */
-.react-calendar {
+/* Date picker (react-calendar). Its own stylesheet loads after this file, so
+   every rule here is scoped to .react-calendar.rb-calendar to outrank it.
+   Colors come from the theme tokens, so it follows light and dark mode. */
+.react-calendar.rb-calendar {
+  width: 300px;
   border: none;
+  background: transparent;
+  color: var(--foreground);
   font-family: inherit;
 }
-.react-calendar__tile--active,
-.react-calendar__tile--active:enabled:hover,
-.react-calendar__tile--active:enabled:focus {
-  background: var(--color-brand-600);
-  color: white;
-  border-radius: 0.5rem;
+.rb-calendar .react-calendar__navigation {
+  margin-bottom: 0.25rem;
 }
-.react-calendar__tile--now {
-  background: var(--color-amber-100);
+.rb-calendar .react-calendar__navigation button {
   border-radius: 0.5rem;
+  color: var(--foreground);
+  font-weight: 600;
+}
+.rb-calendar .react-calendar__navigation button:enabled:hover,
+.rb-calendar .react-calendar__navigation button:enabled:focus,
+.rb-calendar .react-calendar__tile:enabled:hover,
+.rb-calendar .react-calendar__tile:enabled:focus {
+  background: var(--color-brand-50);
+}
+.rb-calendar .react-calendar__navigation button:disabled,
+.rb-calendar .react-calendar__tile:disabled {
+  background: transparent;
+  color: var(--color-gray-300);
+}
+.rb-calendar .react-calendar__month-view__weekdays__weekday {
+  color: var(--color-gray-500);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.rb-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+}
+.rb-calendar .react-calendar__tile {
+  border-radius: 0.5rem;
+  color: var(--foreground);
+}
+.rb-calendar .react-calendar__month-view__days__day--weekend {
+  color: var(--color-grape-600);
+}
+.rb-calendar .react-calendar__month-view__days__day--neighboringMonth,
+.rb-calendar .react-calendar__month-view__days__day--neighboringMonth:disabled {
+  color: var(--color-gray-300);
+}
+.rb-calendar .react-calendar__tile--now {
+  background: var(--color-amber-100);
+}
+.rb-calendar .react-calendar__tile--active,
+.rb-calendar .react-calendar__tile--active:enabled:hover,
+.rb-calendar .react-calendar__tile--active:enabled:focus {
+  background-image: linear-gradient(135deg, var(--rb-blue-600), var(--rb-grape-600));
+  color: white;
 }
